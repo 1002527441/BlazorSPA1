@@ -1,51 +1,93 @@
 ﻿@page "/listemployees"
 @inject IEmployeeService EmployeeService
+@inject NavigationManager nav
 
-<h2>Employee Details</h2>
-<p>
-    <a href="/addemployee">Create New Employee</a>
-</p>
-@if (employees == null)
-{
-    <p>Loading page...</p>
-}
-else
-{
-    <table class='table'>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Department</th>
-                <th>Designation</th>
-                <th>Company</th>
-                <th>City</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var employee in employees)
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col-10">
+                <h2>Employee Details</h2>
+            </div>
+            <div class="col-2">
+                @*<a href="/addemployee">Create New Employee</a>*@
+                <BButton Type="@ButtonType.Danger" IsCircle="true" Icon="el-icon-plus" Size="@ButtonSize.Mini" OnClick="@AddEmployee"></BButton>
+            </div>
+        </div>
+       </div>
+
+    
+
+
+        @if (employees == null)
+        {
+            <p>Loading page...</p>
+        }
+        else
+        {
+            <table class='table'>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Department</th>
+                        <th>Designation</th>
+                        <th>Company</th>
+                        <th>City</th>
+                        <th>Operations</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var employee in employees)
+                    {
+                        <tr>
+                            <td>@employee.Name</td>
+                            <td>@employee.Department</td>
+                            <td>@employee.Designation</td>
+                            <td>@employee.Company</td>
+                            <td>@employee.City</td>
+                            <td>
+                                <BButtonGroup>
+                                    <BButton Type="@ButtonType.Primary" Icon="el-icon-edit" Size="@ButtonSize.Mini" OnClick="@(()=>EditEmployee(employee.Id))">
+
+                                    </BButton>
+                                    <BButton Type="@ButtonType.Primary" Icon="el-icon-close" Size="@ButtonSize.Mini" OnClick="@(()=>DeleteEmployee(employee.Id))">
+
+                                    </BButton>
+                                </BButtonGroup>
+
+                                @*<a href='/editemployee/@employee.Id'>Edit</a>
+                                <a href='/deleteemployee/@employee.Id'>Delete</a>*@
+                            </td>
+                        </tr>
+
+                    }
+                </tbody>
+            </table>
+        }
+
+        @code {
+            List<Employee> employees;
+
+            protected override async Task OnInitializedAsync()
             {
-                <tr>
-                    <td>@employee.Name</td>
-                    <td>@employee.Department</td>
-                    <td>@employee.Designation</td>
-                    <td>@employee.Company</td>
-                    <td>@employee.City</td>
-                    <td>
-                        <a href='/editemployee/@employee.Id'>Edit</a>
-                        <a href='/deleteemployee/@employee.Id'>Delete</a>
-                    </td>
-                </tr>
+                employees = await EmployeeService.GetEmployees();
+            }
+
+            private void AddEmployee()
+            {
+                nav.NavigateTo("/addemployee");
 
             }
-        </tbody>
-    </table>
-}
 
-@code {
-    List<Employee> employees;
+            private void EditEmployee(string Id)
+            {
+                nav.NavigateTo($"/editemployee/{Id}");
 
-    protected override async Task OnInitializedAsync()
-    {
-        employees = await EmployeeService.GetEmployees();
-    }
-}   
+            }
+
+            private void DeleteEmployee(string Id)
+            {
+                nav.NavigateTo($"/deleteemployee/{Id}");
+
+            }
+        }

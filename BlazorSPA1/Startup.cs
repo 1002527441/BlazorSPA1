@@ -12,6 +12,7 @@ using BlazorSPA1.Data;
 using Microsoft.EntityFrameworkCore;
 using BlazorSPA1.DbContexts;
 using BlazorSPA1.Services;
+using Blazui.Component;
 
 namespace BlazorSPA1
 {
@@ -30,6 +31,7 @@ namespace BlazorSPA1
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
+            services.AddBlazuiServices();
             services.AddSingleton<WeatherForecastService>();
 
             services.AddDbContext<SqlDbContext>(options =>
